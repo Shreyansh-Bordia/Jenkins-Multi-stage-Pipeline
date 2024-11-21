@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        docker { image 'python:3.11-slim' }
+    }
 
     environment {
         VENV_DIR = 'venv'
@@ -47,4 +49,3 @@ pipeline {
         }
     }
 }
-
