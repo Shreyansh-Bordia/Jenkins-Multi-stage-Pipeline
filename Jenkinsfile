@@ -10,9 +10,6 @@ pipeline {
             steps {
                 echo 'Installing dependencies...'
                 script {
-                    // Install python3-venv if missing (for creating the virtual environment)
-                    sh 'sudo apt-get update && sudo apt-get install -y python3.11-venv'
-
                     // Create a virtual environment
                     sh 'python3 -m venv $VENV_DIR'
 
