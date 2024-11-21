@@ -1,22 +1,33 @@
 pipeline {
     agent any
 
+    environment {
+        VENV_DIR = 'venv'
+    }
+
     stages {
         stage('Build') {
             steps {
                 echo 'Installing dependencies...'
-                sh '''
-            		python3 -m venv venv
-            		source venv/bin/activate
-            		pip install --upgrade pip
-            		pip install -r requirements.txt
-        	'''
+                script {
+                    // Install python3-venv if missing (for creating the virtual environment)
+                    sh 'sudo apt-get update && sudo apt-get install -y python3.11-venv'
+
+                    // Create a virtual environment
+                    sh 'python3 -m venv $VENV_DIR'
+
+                    // Activate the virtual environment and install dependencies
+                    sh '. $VENV_DIR/bin/activate && pip install -r requirements.txt'
+                }
             }
         }
         stage('Test') {
             steps {
                 echo 'Running tests...'
-                sh 'python -m unittest discover -s .'
+                script {
+                    // Activate the virtual environment and run tests
+                    sh '. $VENV_DIR/bin/activate && python -m unittest discover -s .'
+                }
             }
         }
         stage('Deploy') {
@@ -39,3 +50,4 @@ pipeline {
         }
     }
 }
+
